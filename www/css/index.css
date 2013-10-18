@@ -134,3 +134,19 @@ h1 {
     -o-transition: margin-left 1s;
     transition: margin-left 1s;
 }
+
+.scrollable {
+    padding: 5px;
+    margin: 10px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    top: 10px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 220px;
+    width: 100%;
+    -webkit-box-shadow: outset 0 1px rgba(255,255,255,0.12);
+    box-shadow: outset 0 1px rgba(255,255,255,0.12);
+
+}

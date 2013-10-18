@@ -41,7 +41,7 @@
                   <li class="list-group-item">Case</li>
                   <li class="list-group-item">Suspect Bios</li>
                   <li class="list-group-item"><a href="#" id="mapButton">Maps</a></li>
-                  <li class="list-group-item">Clues</li>
+                  <li class="list-group-item"><a href="#" id="clueButton">Clues</a></li>
                   <li class="list-group-item">Interrogate</li>
                 </ul>
 			</div>
@@ -127,6 +127,11 @@
                 $(".slider").removeClass("inside");
                 $("#mapSelector").addClass("inside");
             });
+            
+            
+            $("#clueButton").click(function(){
+                window.location = "clues.html"
+            })
             
 			
         </script>

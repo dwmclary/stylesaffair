@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=yes, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css" />
+        <link rel="stylesheet" href="js/slidingview/slidingview.css" type="text/css" />
+        <link rel="stylesheet" href="js/viewnavigator/viewnavigator.css" type="text/css" />
+        <title>The Affair at Styles</title>
+        <style type="text/css">
+        div#wrapper img { -webkit-transform:translate3d(0,0,0) }
+        </style>
+    </head>
+    <body>
+
+
+       	<div class="slidingview_wrapper">
+			<div id="sidebar" style="background-image:url('img/dossier_background.png');">
+                <ul class="list-group" style="font-family: 'American Typewriter'">
+                  <li class="list-group-item">Case</li>
+                  <li class="list-group-item">Suspect Bios</li>
+                  <li class="list-group-item"><a href="#" id="mapButton">Maps</a></li>
+                  <li class="list-group-item"><a href="#" id="clueButton">Clues</a></li>
+                  <li class="list-group-item">Interrogate</li>
+                </ul>
+			</div>
+			<div id="body" style="background-image:url('img/dossier_background.png');border-style:solid;
+            border-width:5px;">        
+			    <div class="app">
+    			        <div id="clueSelector" class="slider inside">
+    			            <div class="row"><h3 id="clueHeader" style="font-family: 'American Typewriter'">Clues</h3></div>
+			                <div id="clueList" class="scrollable">
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+        <!-- // <script type="text/javascript" src="phonegap.js"></script> -->
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.js"></script>
+        <script type="text/javascript" src="js/libs/iscroll.js"></script>
+		<script type="text/javascript" src="js/libs/noClickDelay.js"></script>
+		<script type="text/javascript" src="js/slidingview/slidingview.js"></script>
+		<script type="text/javascript" src="js/clues.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+            
+            var swapInside = function (outgoing, incoming)
+            {
+                var incomingId;
+                var outgoingId;
+                if (incoming != "#clueSelector")
+                {
+                    incomingId = parseInt(incoming.id.replace("clueCol", ""));
+                    $(outgoing).removeClass("inside");
+                    $("#"+$(".slider")[incomingId+1].id).addClass("inside");
+                    
+                }
+                else
+                {
+                    outgoingId = parseInt(outgoing.id.replace("backClue", ""));
+                    $("#"+$(".slider")[outgoingId+1].id).removeClass("inside");
+                    $(incoming).addClass("inside");
+                    
+                }
+            }
+            
+            var clues = buildClues();
+            $("#clueHeader").append("<br><small>"+clues.filter(function(element){return element.unlocked==true;}).length+" clues available");
+            for (var i = 0; i < clues.length; i++){
+                var clue = clues[i];
+                var clueLink = "#clueCol"+i;
+                var clueDescript = "#clueDescription"+i
+                var backButton = "backClue"+i
+                if (clue.unlocked == true)
+                {
+                    $("#clueList").append('<div class="row" id="'+i+'"><div class="col-sm-6 col-md-3" id="clueCol'+i+'"></div></div>');
+                }
+                // else
+                // {
+                //     $("#clueList").append('<div style="visibility:hidden" class="row" id="'+i+'"><div class="col-sm-6 col-md-3" id="clueCol'+i+'"></div></div>');
+                // }
+                if (clue.thumb)
+                {
+                    $('#clueCol'+i).append('<img src="'+clue.thumb+'" class="img-responsive" alt="'+clue.title+'">');
+                }
+                
+
+                //clue title and link
+                $('#clueCol'+i).append('<a id="'+clueLink+'"><div class="caption"><h6 style="font-family: \'American Typewriter\'">'+clue.title+'</h6></div></a>');
+                
+                //clue description
+                $(".app").append('<div id="clueDescription'+i+'" class="slider"><div class="row"><h3 style="font-family: \'American Typewriter\'">'+clue.title+'</h3>'+clue.description+'<button id="'+backButton+'" type="button" class="btn btn-black">Back</button></div></div></div></div>');
+                $("#clueCol"+i).click(function(){swapInside("#clueSelector", this)});
+                $("#"+backButton).click(function(){swapInside(this, "#clueSelector")});
+                
+            }
+            
+            $("#mapButton").click(function(){
+               window.location = "maps.html" 
+            });
+            
+            
+            //uses document because document will be topmost level in bubbling
+            $(document).on('touchmove',function(e){
+              e.preventDefault();
+            });
+            //uses body because jquery on events are called off of the element they are
+            //added to, so bubbling would not work if we used document instead.
+            $('body').on('touchstart','.scrollable',function(e) {
+              if (e.currentTarget.scrollTop === 0) {
+                e.currentTarget.scrollTop = 1;
+              } else if (e.currentTarget.scrollHeight === e.currentTarget.scrollTop + e.currentTarget.offsetHeight) {
+                e.currentTarget.scrollTop -= 1;
+              }
+            });
+            //prevents preventDefault from being called on document if it sees a scrollable div
+            $('body').on('touchmove','.scrollable',function(e) {
+              e.stopPropagation();
+            });
+            
+            // document.addEventListener('DOMContentLoaded', loaded, false);
+            
+
+
+            
+        </script>
+    </body>
+</html>
